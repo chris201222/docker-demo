@@ -47,7 +47,7 @@ jobs:
       - name: Docker Build
         id: build_image
         run: |
-          docker build -t ghcr.io/${{ inputs.working-directory }}:${{ github.run_number }} nginx/Dockerfile .
+          docker build -t ghcr.io/nginx:${{ github.run_number }} -f nginx/Dockerfile .
           
       - name: Docker Push
         id: push_image
