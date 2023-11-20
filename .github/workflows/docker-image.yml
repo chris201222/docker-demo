@@ -47,7 +47,7 @@ jobs:
       - name: Docker Build
         id: build_image
         run: |
-          docker build -t ghcr.io/nginx:${{ github.run_number }} -f nginx/Dockerfile .
+          docker build -t ghcr.io/nginx:${{ github.sha }} -f nginx/Dockerfile .
           
       # - name: Docker Push
       #   id: push_image
@@ -60,5 +60,5 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           repository: chris201222/platform-config
           event-type: update-image-tag
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "imageName": "nginx", "imageTag": "sha": "${{ github.sha }}"}'
           # client-payload: '{"imageName": nginx, "IMAGE_TAG": "${{ github.run_number }}", "currentBranch": "${{ steps.branch-name.outputs.current_branch }}" }'
