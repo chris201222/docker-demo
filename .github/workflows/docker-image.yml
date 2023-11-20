@@ -60,4 +60,5 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           repository: chris201222/platform-config
           event-type: update-image-tag
-          client-payload: '{"imageName": nginx, "IMAGE_TAG": "${{ github.run_number }}", "currentBranch": "${{ steps.branch-name.outputs.current_branch }}" }'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          # client-payload: '{"imageName": nginx, "IMAGE_TAG": "${{ github.run_number }}", "currentBranch": "${{ steps.branch-name.outputs.current_branch }}" }'
