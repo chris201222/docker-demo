@@ -49,10 +49,10 @@ jobs:
         run: |
           docker build -t ghcr.io/nginx:${{ github.run_number }} -f nginx/Dockerfile .
           
-      - name: Docker Push
-        id: push_image
-        run: |
-          docker push ghcr.io/nginx:${{ github.run_number }}
+      # - name: Docker Push
+      #   id: push_image
+      #   run: |
+      #     docker push ghcr.io/nginx:${{ github.run_number }}
 
 
       - name: Get Current Branch
