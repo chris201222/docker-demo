@@ -54,9 +54,13 @@ jobs:
       #   run: |
       #     docker push ghcr.io/nginx:${{ github.run_number }}
 
-      - name: Print Github Event Info
+      # - name: Print Github Event Info
+      #   run: |
+      #     echo "${{toJSON(github.event)}}"
+
+      - name: Print Info
         run: |
-          echo "${{toJSON(github.event)}}"
+          echo ${{ github.event.head_commit.message }}
 
       # - name: Repository Dispatch
       #   uses: peter-evans/repository-dispatch@v2
