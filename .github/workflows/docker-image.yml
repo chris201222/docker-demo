@@ -2,14 +2,14 @@ name: Docker Image CI
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - 'main'
-  #   tags:
-  #     - 'v*'
-  # pull_request:
-  #   branches:
-  #     - 'main'
+  push:
+    branches:
+      - 'main'
+    # tags:
+    #   - 'v*'
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   docker:
@@ -54,18 +54,22 @@ jobs:
       #   run: |
       #     docker push ghcr.io/nginx:${{ github.run_number }}
 
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          repository: chris201222/platform-config
-          event-type: update-image-tag
-          client-payload: |- 
-            {
-              "ref": "${{ github.ref }}", 
-              "sha": "${{ github.sha }}", 
-              "imageName": "nginx", 
-              "imageTag": "${{ github.sha }}", 
-              "sha": "${{ github.sha }}", 
-              "commitMessage": "${{ github.event.head_commit.message }}"
-            }
+      - name: Print Github Event Info
+        run: |
+          echo "${{toJSON(github.event)}}"
+
+      # - name: Repository Dispatch
+      #   uses: peter-evans/repository-dispatch@v2
+      #   with:
+      #     token: ${{ secrets.GH_TOKEN }}
+      #     repository: chris201222/platform-config
+      #     event-type: update-image-tag
+      #     client-payload: |- 
+      #       {
+      #         "ref": "${{ github.ref }}", 
+      #         "sha": "${{ github.sha }}", 
+      #         "imageName": "nginx", 
+      #         "imageTag": "${{ github.sha }}", 
+      #         "sha": "${{ github.sha }}", 
+      #         "commitMessage": "${{ github.event.head_commit.message }}"
+      #       }
