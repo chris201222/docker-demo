@@ -125,7 +125,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ${{ inputs.context }}
-          file: ${{ inputs.file }}
+          # file: ${{ inputs.file }}
           platforms: ${{ inputs.platforms }}
           push: ${{ inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
