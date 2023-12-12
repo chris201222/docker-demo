@@ -1,19 +1,19 @@
 name: Build Image
 
 on:
-  push:
-    paths-ignore:
-    - 'README.md'
-    - '.github/**'
-    branches:
-      - 'main'
-  pull_request:
-    paths-ignore:
-    - 'README.md'
-    - '.github/**'
-    branches:
-      - 'develop'
-      - 'release'
+  # push:
+  #   paths-ignore:
+  #   - 'README.md'
+  #   - '.github/**'
+  #   branches:
+  #     - 'main'
+  # pull_request:
+  #   paths-ignore:
+  #   - 'README.md'
+  #   - '.github/**'
+  #   branches:
+  #     - 'develop'
+  #     - 'release'
   workflow_dispatch:
 
 concurrency:
