@@ -54,8 +54,7 @@ on:
         required: false
         type: string
         default:
-          # ghcr.io/${{ github.repository }}
-          ghcr.io/nginx
+          ghcr.io/${{ github.repository }}
 
       platforms:
         description: A list of platforms to build for
