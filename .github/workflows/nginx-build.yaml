@@ -20,5 +20,5 @@ jobs:
       packages: write
     uses: ./.github/workflows/docker-build.yaml
     with:
-      context: "nginx"
+      context: "./nginx"
     secrets: inherit
