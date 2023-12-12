@@ -153,4 +153,7 @@ jobs:
               "imageTag": "sha-${{ github.sha }}", 
               "commitMessage": "${{ github.event.head_commit.message }}",
               "lastCommitBy": "${{ github.event.commits[0].author.name }}"
-            }                  
+            }
+      - name: Print Event Info
+        run: |
+          echo "${{ github.events}}"
