@@ -54,7 +54,7 @@ on:
         required: false
         type: string
         default:
-          ghcr.io/${{ github.repository }}
+          ${{ github.repository }}
 
       platforms:
         description: A list of platforms to build for
@@ -138,18 +138,18 @@ jobs:
           provenance: true
           sbom: true
 
-      # - name: Repository Dispatch
-      #   uses: peter-evans/repository-dispatch@v2
-      #   with:
-      #     token: ${{ secrets.GH_TOKEN }}
-      #     repository: chris201222/platform-config
-      #     event-type: update-image-tag
-      #     client-payload: |- 
-      #       {
-      #         "ref": "${{ github.ref }}", 
-      #         "sha": "${{ github.sha }}", 
-      #         "imageName": "springboot-demo", 
-      #         "imageTag": "sha-${{ github.sha }}", 
-      #         "commitMessage": "${{ github.event.head_commit.message }}",
-      #         "lastCommitBy": "${{ github.event.commits[0].author.name }}"
-      #       }                  
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          repository: chris201222/platform-config
+          event-type: update-image-tag
+          client-payload: |- 
+            {
+              "ref": "${{ github.ref }}", 
+              "sha": "${{ github.sha }}", 
+              "imageName": "${{ github.repository }}", 
+              "imageTag": "sha-${{ github.sha }}", 
+              "commitMessage": "${{ github.event.head_commit.message }}",
+              "lastCommitBy": "${{ github.event.commits[0].author.name }}"
+            }                  
