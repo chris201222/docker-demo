@@ -147,6 +147,7 @@ jobs:
           client-payload: |- 
             {
               "ref": "${{ github.ref }}", 
+              "github_base_ref": "${{ github.base_ref }}"
               "sha": "${{ github.sha }}", 
               "imageName": "${{ inputs.working-directory }}", 
               "imageTag": "sha-${{ github.sha }}", 
