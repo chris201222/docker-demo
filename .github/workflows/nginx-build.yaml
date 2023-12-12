@@ -20,5 +20,6 @@ jobs:
       packages: write
     uses: ./.github/workflows/docker-build.yaml
     with:
+      working-directory: docker-demo
       context: ./nginx
     secrets: inherit
