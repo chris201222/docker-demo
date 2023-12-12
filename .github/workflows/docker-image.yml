@@ -1,66 +1,142 @@
-name: Docker Image CI
-
+name: Docker Build
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - 'main'
-    # tags:
-    #   - 'v*'
-  pull_request:
-    branches:
-      - 'main'
+  workflow_call:
+    inputs:
+      env:
+        required: false
+        type: string
+        default: "dev"
+
+      working-directory:
+        required: false
+        type: string
+        default: "."
+
+      ghcr-enable:
+        description: Push image to Github Container Registry
+        required: false
+        default: true
+        type: boolean
+
+      context:
+        description: Docker context (path) to start build from
+        # To set to a subdir, use format of "{{defaultContext}}:mysubdir"
+        required: false
+        type: string
+
+      file:
+        description: Dockerfile to use
+        required: false
+        default: Dockerfile
+        type: string
+
+      flavor-rules:
+        description: Three rules to (optionally) set for tag-rules, latest, prefix, and suffix
+        required: false
+        type: string
+        default: |
+          latest=false
+
+      tag-rules:
+        description: Use docker-metadata action to create tags from a key-value pair list in CSV format
+        required: false
+        type: string
+        default: |
+          # type=raw,value=stable-{{date 'YYYYMMDD'}}-{{sha}},enable={{is_default_branch}},priority=300
+          # type=ref,event=tag,priority=200
+          # type=raw,value=latest,enable={{is_default_branch}},priority=100
+          # type=raw,value=gha-${{ github.run_id }},enable=${{github.event_name == 'pull_request'}},priority=200
+          # type=ref,event=pr,priority=100
+          type=sha, format=short
+
+      image-names:
+        description: A list of the image names(account/repo) to build and push
+        required: false
+        type: string
+        default:
+          ghcr.io/${{ github.repository }}
+
+      platforms:
+        description: A list of platforms to build for
+        required: false
+        type: string
+        # common ones: linux/amd64,linux/arm64,linux/arm/v7
+        default: |
+          linux/amd64
+
+      push:
+        description: Push Image to registry
+        required: false
+        default: true
+        type: boolean
+
+    outputs:
+      ghcr-tag:
+        description: the tag of the image pushed to GHCR
+        value: ${{ jobs.build-image.outputs.ghcr-tag }}
+
+permissions:
+  contents: read
+  packages: write
 
 jobs:
-  docker:
+  docker-build:
+    name: build and test
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    environment: ${{ inputs.env || 'dev' }}
 
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v7
-        
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: nginx
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v2
+        # BuildKit (used with `docker buildx`) is the best way to build images
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
 
       - name: Login to GitHub Container Registry
+        if: inputs.ghcr-enable == true
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
-          
-      # - name: Build and push
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: nginx
-      #     # push: ${{ github.event_name != 'pull_request' }}
-      #     push: false
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Docker Build
+#        # tmate session for debugging
+#      - name: Setup tmate session for debugging
+#        uses: mxschmitt/action-tmate@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ inputs.image-names }}
+          tags: ${{ inputs.tag-rules }}
+          # flavor-rules: ${{ inputs.flavor-rules }}
+
+      - name: Build and push
         id: build_image
-        run: |
-          docker build -t ghcr.io/nginx:${{ github.sha }} -f nginx/Dockerfile .
-          
-      # - name: Docker Push
-      #   id: push_image
-      #   run: |
-      #     docker push ghcr.io/nginx:${{ github.run_number }}
-
-      # - name: Print Github Event Info
-      #   run: |
-      #     echo "${{toJSON(github.event)}}"
-
-      - name: Print Info
-        run: |
-          echo ${{ github.event.head_commit.message }}
+        uses: docker/build-push-action@v4
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+          platforms: ${{ inputs.platforms }}
+          push: ${{ inputs.push }}
+          tags: ${{ steps.meta.outputs.tags }}
+          target: ${{ inputs.target }}
+          builder: ${{ steps.buildx.outputs.name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: ${{ steps.meta.outputs.labels }}
+          # provenance: ${{ steps.meta.outputs.provenance }}
+          provenance: true
+          sbom: true
 
       # - name: Repository Dispatch
       #   uses: peter-evans/repository-dispatch@v2
@@ -72,8 +148,8 @@ jobs:
       #       {
       #         "ref": "${{ github.ref }}", 
       #         "sha": "${{ github.sha }}", 
-      #         "imageName": "nginx", 
-      #         "imageTag": "${{ github.sha }}", 
-      #         "sha": "${{ github.sha }}", 
-      #         "commitMessage": "${{ github.event.head_commit.message }}"
-      #       }
+      #         "imageName": "springboot-demo", 
+      #         "imageTag": "sha-${{ github.sha }}", 
+      #         "commitMessage": "${{ github.event.head_commit.message }}",
+      #         "lastCommitBy": "${{ github.event.commits[0].author.name }}"
+      #       }                  
