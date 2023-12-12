@@ -1,0 +1,24 @@
+name: Build Image
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/docker-build.yaml
+    with:
+      context: ./nginx
+    secrets: inherit
