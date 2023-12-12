@@ -153,7 +153,7 @@ jobs:
               "imageTag": "sha-${{ github.sha }}", 
               "event_name": "${{github.event_name}}",
               "commitMessage": "${{ github.event.head_commit.message }}",
-              "lastCommitBy": "${{ github.event.actor }}"
+              "lastCommitBy": "${{ github.actor }}"
             }
       # - name: Dump GitHub context
       #   env:
