@@ -151,9 +151,9 @@ jobs:
               "sha": "${{ github.sha }}", 
               "imageName": "${{ inputs.working-directory }}", 
               "imageTag": "sha-${{ github.sha }}", 
-              "event_name": "${{github.event_name}}"
+              "event_name": "${{github.event_name}}",
               "commitMessage": "${{ github.event.head_commit.message }}",
-              "lastCommitBy": "${{ github.event.commits[0].author.name }}"
+              "lastCommitBy": "${{ github.event.actor }}"
             }
       # - name: Dump GitHub context
       #   env:
