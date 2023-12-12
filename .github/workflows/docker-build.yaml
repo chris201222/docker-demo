@@ -154,6 +154,8 @@ jobs:
               "commitMessage": "${{ github.event.head_commit.message }}",
               "lastCommitBy": "${{ github.event.commits[0].author.name }}"
             }
-      - name: Print Event Info
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
-          echo "${{ github.events}}"
+          echo "$GITHUB_CONTEXT"
