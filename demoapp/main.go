@@ -6,7 +6,7 @@ import (
 )
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	msg := "Hello from Go!!!!!"
+	msg := "Hello from Go, Chris is doing test"
 	fmt.Fprintf(w, msg)
 
 }
