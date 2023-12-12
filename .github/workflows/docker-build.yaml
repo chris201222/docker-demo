@@ -151,6 +151,7 @@ jobs:
               "sha": "${{ github.sha }}", 
               "imageName": "${{ inputs.working-directory }}", 
               "imageTag": "sha-${{ github.sha }}", 
+              "event_name": "${{github.event_name}}",
               "commitMessage": "${{ github.event.head_commit.message }}",
-              "lastCommitBy": "${{ github.event.actor }}"
+              "lastCommitBy": "${{ github.actor }}"
             }
