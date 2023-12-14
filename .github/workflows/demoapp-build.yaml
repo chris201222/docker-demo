@@ -3,13 +3,11 @@ name: Build DemoApp
 on:
   push:
     paths-ignore:
-    - 'README.md'
     - '.github/**'
     branches:
       - 'release/**'
   pull_request:
     paths-ignore:
-    - 'README.md'
     - '.github/**'
     branches:
       - 'develop'
