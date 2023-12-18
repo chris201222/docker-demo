@@ -47,7 +47,7 @@ on:
           # type=raw,value=latest,enable={{is_default_branch}},priority=100
           # type=raw,value=gha-${{ github.run_id }},enable=${{github.event_name == 'pull_request'}},priority=200
           # type=ref,event=pr,priority=100
-          type=sha, format=long
+          type=sha, format=short
 
       image-names:
         description: A list of the image names(account/repo) to build and push
@@ -155,9 +155,9 @@ jobs:
             {
               "ref": "${{ github.ref }}", 
               "github_base_ref": "${{ github.base_ref }}",
-              "sha": "sha-${{ github.sha }}", 
+              "sha": "sha-${{ github.event.pull_request.head.sha }}", 
               "imageName": "${{ inputs.working-directory }}", 
-              "imageTag": "sha-${{ github.sha }}", 
+              "imageTag": "sha-${{ github.event.pull_request.head.sha }}",
               "event_name": "${{github.event_name}}",
               "commitMessage": "${{ github.event.head_commit.message }}",
               "lastCommitBy": "${{ github.actor }}"
