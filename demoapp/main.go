@@ -6,7 +6,7 @@ import (
 )
 
 func hello(w http.ResponseWriter, req *http.Request) {
-	msg := "Hello from Go!, this is a simple web server v1.0.1 build from develop branch"
+	msg := "Hello from Go!, this is a simple web server v1.0.1, Test get SHA from pull request"
 	fmt.Fprintf(w, msg)
 
 }
